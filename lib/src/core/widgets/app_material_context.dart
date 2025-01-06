@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:ochildasturxon/src/core/routes/router_config.dart";
 import "package:ochildasturxon/src/feature/auth/view/pages/splash_page.dart";
 import "../../feature/settings/inherited_locale_notifier.dart";
 import "../../feature/settings/inherited_theme_notifier.dart";
@@ -18,15 +17,15 @@ class AppMaterialContext extends StatelessWidget {
         child: InheritedLocalNotifier(
           localController: localController,
           child: Builder(
-            builder: (context) => MaterialApp(
-              title: "Tez Yetkaz",
-              theme: ThemeData(
-                bottomSheetTheme: const BottomSheetThemeData(
-                  backgroundColor: Colors.white,
-                ),
-              ),
+            builder: (context) => const MaterialApp(
+              // title: "Tez Yetkaz",
+              // theme: ThemeData(
+              //   bottomSheetTheme: const BottomSheetThemeData(
+              //     backgroundColor: Colors.white,
+              //   ),
+              // ),
               debugShowCheckedModeBanner: false,
-              home: const SplashPage(),
+              home: SplashPage(),
             ),
           ),
         ),
