@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:ochildasturxon/src/feature/auth/view/pages/splash_page.dart";
+import "package:ochildasturxon/src/feature/ofitsiant/view/pages/ofitsiant_page.dart";
+import "package:ochildasturxon/src/feature/ofitsiant/view/widgets/notification_button_widget.dart";
 import "../../feature/settings/inherited_locale_notifier.dart";
 import "../../feature/settings/inherited_theme_notifier.dart";
 import "../../feature/settings/locale_controller.dart";
@@ -17,7 +19,7 @@ class AppMaterialContext extends StatelessWidget {
         child: InheritedLocalNotifier(
           localController: localController,
           child: Builder(
-            builder: (context) => const MaterialApp(
+            builder: (context) => MaterialApp(
               // title: "Tez Yetkaz",
               // theme: ThemeData(
               //   bottomSheetTheme: const BottomSheetThemeData(
@@ -25,7 +27,7 @@ class AppMaterialContext extends StatelessWidget {
               //   ),
               // ),
               debugShowCheckedModeBanner: false,
-              home: SplashPage(),
+              home: OfitsiantPage(),
             ),
           ),
         ),
