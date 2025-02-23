@@ -3,22 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ochildasturxon/src/core/style/app_colors.dart';
 
-class NotificationButton extends StatefulWidget {
-  @override
-  _NotificationButtonState createState() => _NotificationButtonState();
-}
-
-class _NotificationButtonState extends State<NotificationButton> {
-  bool isExpanded = false;
-
+class NotificationButton extends StatelessWidget {
+  const NotificationButton(this.isExpanded, this.onTap, {required this.svgText, required this.textName, super.key});
+  final bool isExpanded;
+  final VoidCallback onTap;
+  final String svgText;
+  final String textName;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          isExpanded = !isExpanded;
-        });
-      },
+      onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -31,12 +25,12 @@ class _NotificationButtonState extends State<NotificationButton> {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Icon(Icons.notifications, color: Colors.black),
-            SvgPicture.asset("assets/icons/notification_icon.svg"),
+            SvgPicture.asset(svgText),
             if (isExpanded) ...[
               8.horizontalSpace,
-              const Text(
-                "    Yangi\nBuyurtmalar",
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              Text(
+                textName,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ],
           ],

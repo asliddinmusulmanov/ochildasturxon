@@ -5,15 +5,31 @@ final ofitsiantVmProvider = ChangeNotifierProvider((ref) => OfitsiantVm());
 
 class OfitsiantVm extends ChangeNotifier {
   int page = 0;
-  final PageController pageController = PageController();
+  List<bool> buttons = [true, false, false];
+  final PageController pageController;
 
-  void nextPage(int index) {
+  OfitsiantVm() : pageController = PageController(initialPage: 0); // initialPage ni 0 ga o'zgartiring
+
+  void tapped({required int index}) {
+    if (page != index) {
+      pageController.jumpToPage(index); // `animateToPage` o'rniga `jumpToPage`
+    }
+  }
+
+  void animateToPage(int index) {
     page = index;
     pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+    notifyListeners(); // Faqat shu yerda notifyListeners() ni chaqiring
+    debugPrint("page: $index");
+  }
+
+  void updateButtons(int index) {
+    buttons = [false, false, false]; // Barcha tugmalarni o'chirish
+    buttons[index] = true; // Faqat joriy sahifaga mos tugmani yoqish
     notifyListeners();
   }
 }

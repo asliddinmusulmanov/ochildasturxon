@@ -4,29 +4,30 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ochildasturxon/src/core/style/app_colors.dart';
-import 'package:ochildasturxon/src/feature/ofitsiant/view/widgets/confirm_button_widget.dart';
-import 'package:ochildasturxon/src/feature/ofitsiant/view/widgets/history_button_widget.dart';
+import 'package:ochildasturxon/src/feature/ofitsiant/view/widgets/interactive_progress_bar_widget.dart';
 import 'package:ochildasturxon/src/feature/ofitsiant/view/widgets/notification_button_widget.dart';
 import 'package:ochildasturxon/src/feature/ofitsiant/view_model/vm/ofitsiant_vm.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class OfitsiantPage extends ConsumerWidget {
+class OfitsiantPage extends ConsumerStatefulWidget {
   const OfitsiantPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OfitsiantPage> createState() => _OfitsiantPageState();
+}
+
+class _OfitsiantPageState extends ConsumerState<OfitsiantPage> {
+  TextEditingController nameController = TextEditingController();
+  String appBarTitle = "Carla"; // Boshlang'ich ism
+
+  @override
+  Widget build(BuildContext context) {
     var ctr = ref.read(ofitsiantVmProvider);
     ref.watch(ofitsiantVmProvider);
-
-    final PageController _pageController = PageController(
-      initialPage: ctr.page,
-    );
 
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xffFFB130),
-        // toolbarHeight: 108,
         toolbarHeight: MediaQuery.of(context).size.height * 0.12,
         actions: [
           Padding(
@@ -36,19 +37,47 @@ class OfitsiantPage extends ConsumerWidget {
               children: [
                 InkWell(
                   child: SvgPicture.asset("assets/icons/edit.svg"),
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Your Name"),
+                          content: TextField(
+                            controller: nameController,
+                            autofocus: true,
+                            decoration: const InputDecoration(
+                              hintText: "Enter your name",
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                if (nameController.text.isNotEmpty) {
+                                  setState(() {
+                                    appBarTitle = nameController.text;
+                                  });
+                                }
+                                Navigator.of(context).pop();
+                                nameController.clear();
+                              },
+                              child: const Text("Submit"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
-                10.verticalSpace,
+                const SizedBox(height: 10),
                 InkWell(
                   child: SizedBox(
                     height: 50,
                     width: 50,
                     child: DecoratedBox(
                       decoration: const BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(13),
-                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(13)),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -65,34 +94,25 @@ class OfitsiantPage extends ConsumerWidget {
           ),
         ],
         title: Text(
-          "Carla",
+          appBarTitle, // Yangilanadigan sarlavha
           style: GoogleFonts.kaushanScript(
-            color: AppColors.white,
+            color: Colors.white,
             fontSize: 40,
             fontWeight: FontWeight.w400,
           ),
         ),
         flexibleSpace: Stack(
           children: [
-            Image.asset(
-              "assets/images/atlas.png",
-              fit: BoxFit.fill,
-            ),
+            Image.asset("assets/images/atlas.png", fit: BoxFit.fill),
             Image.asset("assets/images/lagan1.png"),
             Align(
               alignment: Alignment.bottomRight,
               child: Image.asset(
                 "assets/images/lagan2.png",
-                height: MediaQuery.of(context).size.height * 0.11.h,
+                height: MediaQuery.of(context).size.height * 0.11,
               ),
             ),
           ],
-        ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          ),
         ),
       ),
       body: Column(
@@ -101,32 +121,65 @@ class OfitsiantPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    ctr.nextPage(0);
-                  },
-                  child: NotificationButton(),
-                ),
-                InkWell(
-                  onTap: () {
-                    ctr.nextPage(1);
-                  },
-                  child: const ConfirmButtonWidget(),
-                ),
-                InkWell(
-                  onTap: () {
-                    ctr.nextPage(2);
-                  },
-                  child: const HistoryButtonWidget(),
-                ),
-              ],
+              children: List.generate(1, (index) {
+                return Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        ctr.tapped(index: 0); // Tugma bosilganda
+                      },
+                      // splashColor: Colors.red,
+                      child: NotificationButton(
+                        ctr.buttons.elementAt(0),
+                        () {
+                          ctr.tapped(index: 0); // Tugma bosilganda
+                        },
+                        svgText: "assets/icons/notification_icon.svg",
+                        textName: "     Yangi\nBuyurtmalar",
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    InkWell(
+                      onTap: () {
+                        ctr.tapped(index: 1); // Tugma bosilganda
+                      },
+                      // splashColor: Colors.red,
+                      child: NotificationButton(
+                        ctr.buttons.elementAt(1),
+                        () {
+                          ctr.tapped(index: 1); // Tugma bosilganda
+                        },
+                        svgText: "assets/icons/confirm_icon.svg",
+                        textName: "Tasdiqlangan\n Buyurtmalar",
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    InkWell(
+                      onTap: () {
+                        ctr.tapped(index: 2); // Tugma bosilganda
+                      },
+                      // splashColor: Colors.red,
+                      child: NotificationButton(
+                        ctr.buttons.elementAt(2),
+                        () {
+                          ctr.tapped(index: 2); // Tugma bosilganda
+                        },
+                        svgText: "assets/icons/history_icon.svg",
+                        textName: "Buyurtmalar\n     Tarixi",
+                      ),
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
           Expanded(
             child: PageView.builder(
               controller: ctr.pageController,
-              onPageChanged: (index) => ctr.nextPage(index),
+              onPageChanged: (index) {
+                ctr.page = index; // Faqat page qiymatini yangilash
+                ctr.updateButtons(index); // Tugmalarni yangilash
+              },
               itemCount: 3,
               itemBuilder: (context, index) {
                 return ListView.builder(
@@ -159,28 +212,33 @@ class OfitsiantPage extends ConsumerWidget {
                                         fontSize: 18,
                                       ),
                                     ),
-                                    Text("Osh"),
-                                    Text("Kabob - 2ta"),
-                                    Text("Tandir go'sht"),
-                                    Text("Bahoriy salat"),
-                                    Text("Non - 2ta"),
-                                    Text("Ko'k choy"),
+                                    const Text("Osh"),
+                                    const Text("Kabob - 2ta"),
+                                    const Text("Tandir go'sht"),
+                                    const Text("Bahoriy salat"),
+                                    const Text("Non - 2ta"),
+                                    const Text("Ko'k choy"),
                                   ],
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     const Text("10:20"),
-                                    CircularPercentIndicator(
-                                      radius: 50,
-                                      lineWidth: 15,
-                                      backgroundColor: AppColors.white,
-                                      progressColor: AppColors.cGreen,
-                                      animation: true,
-                                      animationDuration: 2000,
-                                      percent: 0.8,
-                                      center: const Text("80%"),
-                                      circularStrokeCap: CircularStrokeCap.round,
+                                    InteractiveProgressBar(
+                                      onConfirmComplete: () {
+                                        ctr.pageController.animateToPage(
+                                          1, // 2-indexga o'tish (Tasdiqlangan buyurtmalar)
+                                          duration: const Duration(milliseconds: 500),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
+                                      onReadyComplete: () {
+                                        ctr.pageController.animateToPage(
+                                          2, // 3-indexga o'tish (Yakunlangan buyurtmalar)
+                                          duration: const Duration(milliseconds: 500),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),

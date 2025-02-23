@@ -7,6 +7,7 @@ final class AppColors {
   static const Color cGrey = Color(0xffEAE3E3);
   static const Color cAmber = Color(0xffFFB532);
   static const Color cGreen = Color(0xff5CF01D);
+  static const Color cGrey2 = Color(0xffBEBEBE);
   // static const Color c181818 = Color(0xff181818);
   // static const Color c121212 = Color(0xff121212);
   // static const Color c484848 = Color(0xff484848);
